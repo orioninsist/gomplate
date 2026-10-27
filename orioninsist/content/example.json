@@ -1,62 +1,220 @@
 {
-  "title": "Gomplate Markdown Example",
-  "description": "A clean, reusable Markdown document generated from JSON.",
+  "title": "Complete GitHub Flavored Markdown Example",
+  "description": "A comprehensive Markdown document generated from JSON using Gomplate.",
   "author": "orioninsist",
-  "sections": [
+  "blocks": [
     {
-      "title": "Overview",
-      "body": "This document demonstrates CommonMark and GitHub Flavored Markdown."
+      "type": "heading",
+      "level": 2,
+      "text": "Introduction"
     },
     {
-      "title": "Template Capabilities",
-      "body": "The template supports structured content and consistent formatting."
+      "type": "paragraph",
+      "text": "This document demonstrates **bold**, *italic*, ***bold italic***, ~~strikethrough~~ and `inline code`."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Links"
+    },
+    {
+      "type": "markdown",
+      "content": "[Gomplate Documentation](https://docs.gomplate.ca)\n\n<https://github.com/orioninsist/gomplate>"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Images"
+    },
+    {
+      "type": "image",
+      "alt": "Example image",
+      "url": "https://placehold.co/800x400/png"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Video"
+    },
+    {
+      "type": "video",
+      "title": "Example video link",
+      "url": "https://www.youtube.com/"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Lists"
+    },
+    {
+      "type": "list",
+      "items": [
+        "First item",
+        "Second item",
+        "Third item"
+      ]
+    },
+    {
+      "type": "markdown",
+      "content": "1. First ordered item\n2. Second ordered item\n3. Third ordered item\n\n- Parent item\n  - Nested item\n  - Another nested item"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Task Lists"
+    },
+    {
+      "type": "tasks",
+      "items": [
+        {
+          "name": "Prepare JSON content",
+          "done": true
+        },
+        {
+          "name": "Select Gomplate template",
+          "done": true
+        },
+        {
+          "name": "Generate Markdown output",
+          "done": false
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Blockquotes"
+    },
+    {
+      "type": "quote",
+      "text": "This is a blockquote.\nIt supports multiple lines."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Tables"
+    },
+    {
+      "type": "table",
+      "headers": [
+        "Feature",
+        "Status",
+        "Format"
+      ],
+      "rows": [
+        ["Headings", "Supported", "CommonMark"],
+        ["Tables", "Supported", "GFM"],
+        ["Task Lists", "Supported", "GFM"],
+        ["Mermaid", "Supported on GitHub", "GitHub extension"]
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Code Blocks"
+    },
+    {
+      "type": "code",
+      "language": "bash",
+      "content": "docker run --rm hairyhenderson/gomplate --version"
+    },
+    {
+      "type": "code",
+      "language": "json",
+      "content": "{\n  \"name\": \"gomplate\",\n  \"format\": \"markdown\"\n}"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Mermaid Diagram"
+    },
+    {
+      "type": "mermaid",
+      "content": "flowchart LR\n    A[JSON] --> B[Gomplate]\n    B --> C[Markdown]"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "GitHub Alerts"
+    },
+    {
+      "type": "alert",
+      "kind": "NOTE",
+      "text": "This is an informational note."
+    },
+    {
+      "type": "alert",
+      "kind": "TIP",
+      "text": "Use reusable templates to keep documents consistent."
+    },
+    {
+      "type": "alert",
+      "kind": "IMPORTANT",
+      "text": "Validate JSON before rendering."
+    },
+    {
+      "type": "alert",
+      "kind": "WARNING",
+      "text": "Check file permissions when using Docker bind mounts."
+    },
+    {
+      "type": "alert",
+      "kind": "CAUTION",
+      "text": "Avoid changing system-wide SELinux settings."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Collapsible Details"
+    },
+    {
+      "type": "details",
+      "summary": "Show additional information",
+      "content": "This content is hidden inside an expandable section."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Mathematics"
+    },
+    {
+      "type": "markdown",
+      "content": "Inline math: $E = mc^2$\n\nBlock math:\n\n$$\na^2 + b^2 = c^2\n$$"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Footnotes"
+    },
+    {
+      "type": "markdown",
+      "content": "This sentence includes a footnote.[^1]\n\n[^1]: This is the footnote definition."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Emoji and Mentions"
+    },
+    {
+      "type": "markdown",
+      "content": "Emoji: :rocket: :white_check_mark: :warning:\n\nMention example: @orioninsist"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Horizontal Rule"
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Conclusion"
+    },
+    {
+      "type": "paragraph",
+      "text": "One reusable Gomplate template can generate different Markdown documents using structured JSON content."
     }
-  ],
-  "features": [
-    "Reusable templates",
-    "JSON-driven content",
-    "Docker-based rendering"
-  ],
-  "tasks": [
-    {
-      "name": "Prepare JSON data",
-      "done": true
-    },
-    {
-      "name": "Create Markdown template",
-      "done": true
-    },
-    {
-      "name": "Verify generated output",
-      "done": true
-    }
-  ],
-  "links": [
-    {
-      "name": "Gomplate Documentation",
-      "url": "https://docs.gomplate.ca"
-    },
-    {
-      "name": "GitHub Flavored Markdown",
-      "url": "https://github.github.com/gfm/"
-    }
-  ],
-  "table": [
-    {
-      "feature": "CommonMark",
-      "status": "Supported"
-    },
-    {
-      "feature": "GFM Tables",
-      "status": "Supported"
-    },
-    {
-      "feature": "Task Lists",
-      "status": "Supported"
-    }
-  ],
-  "code": {
-    "language": "bash",
-    "content": "docker run --rm hairyhenderson/gomplate --version"
-  }
+  ]
 }
