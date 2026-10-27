@@ -1,10 +1,51 @@
 {{- $data := ds "content" -}}
+{{- $ratio := "16/9" -}}
+{{- with (index $data "aspectRatio") -}}
+{{- $ratio = . -}}
+{{- end -}}
+{{- with (getenv "SLIDEV_RATIO") -}}
+{{- $ratio = . -}}
+{{- end -}}
+{{- if not (or (eq $ratio "16/9") (eq $ratio "9/16")) -}}
+{{- fail "aspectRatio must be 16/9 or 9/16" -}}
+{{- end }}
 ---
 theme: default
 title: {{ index $data "title" | data.ToYAML | strings.TrimSpace }}
-aspectRatio: 16/9
+aspectRatio: {{ $ratio }}
+canvasWidth: {{ if eq $ratio "9/16" }}540{{ else }}980{{ end }}
 transition: fade
 ---
+
+<style global>
+.slidev-layout {
+  padding: {{ if eq $ratio "9/16" }}32px{{ else }}48px{{ end }};
+  font-size: {{ if eq $ratio "9/16" }}28px{{ else }}32px{{ end }};
+  line-height: 1.35;
+}
+
+.slidev-layout h1 {
+  font-size: {{ if eq $ratio "9/16" }}48px{{ else }}60px{{ end }};
+  line-height: 1.15;
+}
+
+.slidev-layout h2 {
+  font-size: {{ if eq $ratio "9/16" }}38px{{ else }}46px{{ end }};
+  line-height: 1.2;
+}
+
+.slidev-layout p,
+.slidev-layout li {
+  font-size: inherit;
+  line-height: 1.35;
+}
+
+.slidev-layout img {
+  max-width: 100%;
+  max-height: 65%;
+  object-fit: contain;
+}
+</style>
 
 {{- $data := ds "content" -}}
 {{- with (index $data "title") }}

@@ -13,6 +13,12 @@ gomplate() {
 
   template=$(find "$template_dir" -maxdepth 1 -type f -name '*.tmpl' -printf '%f\n' | sort | fzf --prompt='Template > ') || return 1
 
+  local ratio=""
+
+  if [[ "$template" == "slidev.tmpl" ]]; then
+    ratio=$(printf '%s\n' '16/9' '9/16' | fzf --prompt='Aspect ratio > ') || return 1
+  fi
+
   read -r -p 'Output filename (.md) > ' filename
 
   [[ -n "$filename" ]] || return 1
@@ -23,6 +29,7 @@ gomplate() {
  output="$output_dir/$filename"
 
   docker run --rm \
+    -e "SLIDEV_RATIO=$ratio" \
     -v "$content_dir:/data:Z" \
     -v "$template_dir:/templates:ro,Z" \
    -v "$output_dir:/output:Z" \

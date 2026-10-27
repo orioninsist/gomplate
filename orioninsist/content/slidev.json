@@ -1,0 +1,50 @@
+
+{
+  "title": "Failed Windows Logins: Event ID 4625",
+  "description": "One problem. One solution. One SOC Tier 1 takeaway.",
+  "author": "orioninsist",
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Multiple Failed Logins?"
+    },
+    {
+      "type": "paragraph",
+      "text": "A Windows host reports repeated authentication failures. Is it suspicious?"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Check Event ID 4625"
+    },
+    {
+      "type": "paragraph",
+      "text": "Open Event Viewer → Windows Logs → Security. Filter for 4625."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "Correlate the Evidence"
+    },
+    {
+      "type": "list",
+      "items": [
+        "Account and timestamp",
+        "Source IP, when available",
+        "Logon Type and failure status",
+        "Related successful logons: 4624"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "SOC Tier 1 Takeaway"
+    },
+    {
+      "type": "paragraph",
+      "text": "A failed login is not proof of an attack. Correlate the events and escalate suspicious patterns."
+    }
+  ]
+}
+
