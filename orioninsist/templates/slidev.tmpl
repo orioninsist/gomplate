@@ -1,0 +1,93 @@
+{{- $data := ds "content" -}}
+---
+theme: default
+title: {{ index $data "title" | data.ToYAML | strings.TrimSpace }}
+aspectRatio: 16/9
+transition: fade
+---
+
+{{- $data := ds "content" -}}
+{{- with (index $data "title") }}
+# {{ . }}
+
+{{ end }}
+{{- with (index $data "description") }}
+{{ . }}
+
+{{ end }}
+{{- with (index $data "author") }}
+**Author:** {{ . }}
+
+{{ end }}
+{{- range (index $data "blocks") }}
+
+---
+
+{{ if eq .type "heading" }}
+{{- $level := 2 }}
+{{- with .level }}{{ $level = . }}{{ end }}
+{{ strings.Repeat $level "#" }} {{ .text }}
+
+{{- else if eq .type "paragraph" }}
+{{ .text }}
+
+{{- else if eq .type "image" }}
+![{{ .alt }}]({{ .url }})
+
+{{- else if eq .type "video" }}
+[{{ .title }}]({{ .url }})
+
+{{- else if eq .type "code" }}
+~~~{{ .language }}
+{{ .content }}
+~~~
+
+{{- else if eq .type "mermaid" }}
+~~~mermaid
+{{ .content }}
+~~~
+
+{{- else if eq .type "quote" }}
+{{- range (strings.Split "\n" .text) }}
+> {{ . }}
+{{- end }}
+
+{{- else if eq .type "list" }}
+{{- range .items }}
+- {{ . }}
+{{- end }}
+
+{{- else if eq .type "tasks" }}
+{{- range .items }}
+- [{{ if .done }}x{{ else }} {{ end }}] {{ .name }}
+{{- end }}
+
+{{- else if eq .type "table" }}
+|{{ range .headers }} {{ . | strings.ReplaceAll "|" "\\|" }} |{{ end }}
+|{{ range .headers }} --- |{{ end }}
+{{- range .rows }}
+|{{ range . }} {{ . | strings.ReplaceAll "|" "\\|" }} |{{ end }}
+{{- end }}
+
+{{- else if eq .type "divider" }}
+---
+
+{{- else if eq .type "markdown" }}
+{{ .content }}
+
+{{- else if eq .type "alert" }}
+> [!{{ .kind }}]
+{{- range (strings.Split "\n" .text) }}
+> {{ . }}
+{{- end }}
+
+{{- else if eq .type "details" }}
+<details>
+<summary>{{ .summary }}</summary>
+
+{{ .content }}
+
+</details>
+
+{{- end }}
+{{ end -}}
