@@ -1,10 +1,11 @@
 package crypto
 
 import (
-	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"errors"
+	"fmt"
 	"io"
 )
 
@@ -32,11 +33,15 @@ func EncryptAESCBC(key []byte, in []byte) ([]byte, error) {
 	bs := block.BlockSize()
 	pl := bs - len(in)%bs
 
-	// pad with pl, repeated pl times
-	//nolint:gosec // G115 — pl is PKCS#7 length in [1, bs] and bs is the cipher block size
-	in = append(in, bytes.Repeat([]byte{byte(pl)}, pl)...)
-
-	out := make([]byte, bs+len(in))
+	// Copy the content into the output slice after the IV, and pad it there
+	// with pl, repeated pl times. Padding in a copy means the caller's slice
+	// is never written to, even if it has spare capacity.
+	out := make([]byte, bs+len(in)+pl)
+	copy(out[bs:], in)
+	for i := bs + len(in); i < len(out); i++ {
+		//nolint:gosec // G115 — pl is PKCS#7 length in [1, bs] and bs is the cipher block size
+		out[i] = byte(pl)
+	}
 
 	// Generate a random IV. Must be the same length as the block size, and is
 	// stored at the beginning of the output slice unencrypted, so that it can
@@ -46,9 +51,9 @@ func EncryptAESCBC(key []byte, in []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	// encrypt the content into the rest of the output slice
+	// encrypt the padded content in place
 	mode := cipher.NewCBCEncrypter(block, iv)
-	mode.CryptBlocks(out[bs:], in)
+	mode.CryptBlocks(out[bs:], out[bs:])
 
 	return out, nil
 }
@@ -56,6 +61,11 @@ func EncryptAESCBC(key []byte, in []byte) ([]byte, error) {
 // DecryptAESCBC - use a 128, 192, or 256 bit key to decrypt the given content
 // using AES-CBC. The output will not be encoded. Empty content will not be
 // decrypted.
+//
+// An error is returned if the content can't be the output of EncryptAESCBC,
+// i.e. if it isn't a whole number of blocks, is too short to hold an IV and at
+// least one block of ciphertext, or doesn't end with valid padding (which is
+// what usually happens when the wrong key is used).
 //
 // This function is compatible with Helm's encryptAES function, when the input
 // is base64-decoded, and when the key is 256 bits long.
@@ -69,11 +79,16 @@ func DecryptAESCBC(key []byte, in []byte) ([]byte, error) {
 		return nil, err
 	}
 
+	bs := block.BlockSize()
+	if len(in) < 2*bs || len(in)%bs != 0 {
+		return nil, fmt.Errorf("invalid ciphertext length %d: must be a multiple of %d bytes, and hold an IV and at least one block", len(in), bs)
+	}
+
 	// the first block is the IV, unencrypted
-	iv := in[:aes.BlockSize]
+	iv := in[:bs]
 
 	// the rest of the content is encrypted
-	in = in[aes.BlockSize:]
+	in = in[bs:]
 
 	out := make([]byte, len(in))
 
@@ -83,7 +98,15 @@ func DecryptAESCBC(key []byte, in []byte) ([]byte, error) {
 	// content must always be padded with at least one byte, and the padding
 	// byte must be the padding length
 	pl := int(out[len(out)-1])
-	out = out[:len(out)-pl]
+	if pl == 0 || pl > bs {
+		return nil, errors.New("invalid padding")
+	}
 
-	return out, nil
+	for _, b := range out[len(out)-pl:] {
+		if int(b) != pl {
+			return nil, errors.New("invalid padding")
+		}
+	}
+
+	return out[:len(out)-pl], nil
 }
