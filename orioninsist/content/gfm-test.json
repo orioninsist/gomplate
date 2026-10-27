@@ -1,0 +1,21 @@
+{
+  "title": "GFM Test",
+  "description": "Markdown rendering test.",
+  "author": "orioninsist",
+  "blocks": [
+    {"type": "heading", "level": 2, "text": "Features"},
+    {"type": "paragraph", "text": "This is **bold**, *italic* and ~~strikethrough~~."},
+    {"type": "list", "items": ["First", "Second"]},
+    {"type": "tasks", "items": [{"name": "Test rendering", "done": true}]},
+    {"type": "image", "alt": "Example", "url": "https://example.com/image.png"},
+    {"type": "video", "title": "Watch video", "url": "https://example.com/video"},
+    {"type": "quote", "text": "A quoted paragraph."},
+    {"type": "table", "headers": ["Feature", "Status"], "rows": [["Markdown", "Supported"], ["GFM", "Supported"]]},
+    {"type": "code", "language": "bash", "content": "echo hello"},
+    {"type": "mermaid", "content": "flowchart LR\nA --> B"},
+    {"type": "alert", "kind": "NOTE", "text": "Important information."},
+    {"type": "details", "summary": "More information", "content": "Hidden content."},
+    {"type": "divider"},
+    {"type": "markdown", "content": "Visit https://github.com"}
+  ]
+}

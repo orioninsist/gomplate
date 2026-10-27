@@ -1,40 +1,82 @@
 {{- $data := ds "content" -}}
-# {{ $data.title }}
+{{- with (index $data "title") }}
+# {{ . }}
 
-{{ $data.description }}
-
-**Author:** {{ $data.author }}
-
-{{ range $data.sections -}}
-## {{ .title }}
-
-{{ .body }}
-
-{{ end -}}
-## Features
-
-{{ range $data.features -}}
-- {{ . }}
 {{ end }}
-## Tasks
+{{- with (index $data "description") }}
+{{ . }}
 
-{{ range $data.tasks -}}
-- [{{ if .done }}x{{ else }} {{ end }}] {{ .name }}
 {{ end }}
-## Resources
+{{- with (index $data "author") }}
+**Author:** {{ . }}
 
-{{ range $data.links -}}
-- [{{ .name }}]({{ .url }})
 {{ end }}
-## Compatibility
+{{- range (index $data "blocks") }}
+{{- if eq .type "heading" }}
+{{- $level := 2 }}
+{{- with .level }}{{ $level = . }}{{ end }}
+{{ strings.Repeat $level "#" }} {{ .text }}
 
-| Feature | Status |
-| --- | --- |
-{{ range $data.table -}}
-| {{ .feature | strings.ReplaceAll "|" "\\|" }} | {{ .status | strings.ReplaceAll "|" "\\|" }} |
-{{ end }}
-## Code Example
+{{- else if eq .type "paragraph" }}
+{{ .text }}
 
-~~~{{ $data.code.language }}
-{{ $data.code.content }}
+{{- else if eq .type "image" }}
+![{{ .alt }}]({{ .url }})
+
+{{- else if eq .type "video" }}
+[{{ .title }}]({{ .url }})
+
+{{- else if eq .type "code" }}
+~~~{{ .language }}
+{{ .content }}
 ~~~
+
+{{- else if eq .type "mermaid" }}
+~~~mermaid
+{{ .content }}
+~~~
+
+{{- else if eq .type "quote" }}
+{{- range (strings.Split "\n" .text) }}
+> {{ . }}
+{{- end }}
+
+{{- else if eq .type "list" }}
+{{- range .items }}
+- {{ . }}
+{{- end }}
+
+{{- else if eq .type "tasks" }}
+{{- range .items }}
+- [{{ if .done }}x{{ else }} {{ end }}] {{ .name }}
+{{- end }}
+
+{{- else if eq .type "table" }}
+|{{ range .headers }} {{ . | strings.ReplaceAll "|" "\\|" }} |{{ end }}
+|{{ range .headers }} --- |{{ end }}
+{{- range .rows }}
+|{{ range . }} {{ . | strings.ReplaceAll "|" "\\|" }} |{{ end }}
+{{- end }}
+
+{{- else if eq .type "divider" }}
+---
+
+{{- else if eq .type "markdown" }}
+{{ .content }}
+
+{{- else if eq .type "alert" }}
+> [!{{ .kind }}]
+{{- range (strings.Split "\n" .text) }}
+> {{ . }}
+{{- end }}
+
+{{- else if eq .type "details" }}
+<details>
+<summary>{{ .summary }}</summary>
+
+{{ .content }}
+
+</details>
+
+{{- end }}
+{{ end -}}
